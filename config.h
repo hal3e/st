@@ -1,8 +1,8 @@
 /* St config */
 
 static char *font = "Hack:pixelsize=14:antialias=true:autohint=true";
-static char *font2[] = {"Font Awesome 5 Free Solid:size=9:antialias=true:autohint=true",
-                        "Font Awesome 5 Brands:size=9:antialias=true:autohint=true"};
+static char *font2[] = {"Font Awesome 6 Free Solid:size=9:antialias=true:autohint=true",
+                        "Font Awesome 6 Brands:size=9:antialias=true:autohint=true"};
 
 static int borderpx = 5;
 
@@ -76,27 +76,77 @@ unsigned int tabspaces = 4;
 unsigned int alpha = 0xf5;
 
 const char *colorname[] = {
-  "#3b4252", /*  0: nord1  */
-  "#bf616a", /*  1: nord11 */
-  "#a3be8c", /*  2: nord14 */
-  "#ebcb8b", /*  3: nord13 */
-  "#81a1c1", /*  4: nord9  */
-  "#b48ead", /*  5: nord15 */
-  "#88c0d0", /*  6: nord8  */
-  "#e5e9f0", /*  7: nord5  */
-  "#4c566a", /*  8: nord3  */
-  "#bf616a", /*  9: nord11 */
-  "#a3be8c", /* 10: nord14 */
-  "#ebcb8b", /* 11: nord3  */
-  "#81a1c1", /* 12: nord9  */
-  "#b48ead", /* 13: nord15 */
-  "#8fbcbb", /* 14: nord7  */
-  "#616E88", /* 15: nord0  */
-  "#5E81AC", /* 16: nord0  */
-  "#D08770", /* 17: nord0  */
-  [255] = 0,
-  [256] = "#eceff4", /* 256: nord6  */
-  [257] = "#2E3445", /* 257: nord0  */
+
+// machiato
+  "#494D64",
+  "#ED8796",
+  "#A6DA95",
+  "#EED49F",
+  "#8AADF4",
+  "#F5BDE6",
+  "#8BD5CA",
+  "#eaeefa",
+
+  "#5B6078",
+  "#ED8796",
+  "#A6DA95",
+  "#EED49F",
+  "#8AADF4",
+  "#F5BDE6",
+  "#8BD5CA",
+  "#eaeefa",
+
+//[256] = "#CAD3F5",
+  [256] = "#eaeefa",
+  [257] = "#24273A",
+  [258] = "#F4DBD6",
+
+/*//frappe
+	"#51576D",
+	"#E78284",
+	"#A6D189",
+	"#E5C890",
+	"#8CAAEE",
+	"#F4B8E4",
+	"#81C8BE",
+	"#B5BFE2",
+
+	"#626880",
+	"#E78284",
+	"#A6D189",
+	"#E5C890",
+	"#8CAAEE",
+	"#F4B8E4",
+	"#81C8BE",
+	"#A5ADCE",
+
+[256] = "#C6D0F5",
+[257] = "#303446",
+[258] = "#F2D5CF",
+
+// mocha
+	"#45475A",
+	"#F38BA8",
+	"#A6E3A1",
+	"#F9E2AF",
+	"#89B4FA",
+	"#F5C2E7",
+	"#94E2D5",
+	"#BAC2DE",
+
+	/* 8 bright colors
+	"#585B70",
+	"#F38BA8",
+	"#A6E3A1",
+	"#F9E2AF",
+	"#89B4FA",
+	"#F5C2E7",
+	"#94E2D5",
+	"#A6ADC8",
+
+[256] = "#CDD6F4",
+[257] = "#1E1E2E",
+[258] = "#F5E0DC",*/
 };
 
 /*
