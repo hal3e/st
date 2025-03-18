@@ -73,7 +73,7 @@ char *termname = "st-256color";
 unsigned int tabspaces = 4;
 
 /* 0xff is no transparency */
-unsigned int alpha = 0xf5;
+unsigned int alpha = 0xe8;
 
 const char *colorname[] = {
 
@@ -204,24 +204,25 @@ static MouseShortcut mshortcuts[] = {
 
 /* Internal keyboard shortcuts. */
 #define MODKEY Mod1Mask
-#define TERMMOD (ControlMask|ShiftMask)
-
+#define CTRLSHIFT (ControlMask|ShiftMask)
+#define TERMMOD (Mod1Mask|ControlMask)
+#define TERMMOD2 (Mod5Mask|ControlMask)
 static Shortcut shortcuts[] = {
 	/* mask         keysym          function        argument */
 	{ XK_ANY_MOD,   XK_Break,       sendbreak,      {.i =  0} },
 	{ ControlMask,  XK_Print,       toggleprinter,  {.i =  0} },
 	{ ShiftMask,    XK_Print,       printscreen,    {.i =  0} },
 	{ XK_ANY_MOD,   XK_Print,       printsel,       {.i =  0} },
-	{ TERMMOD,      XK_O,           zoom,           {.f = +1} },
-	{ TERMMOD,      XK_Y,           zoom,           {.f = -1} },
-	{ TERMMOD,      XK_F,           zoomreset,      {.f =  0} },
-	{ TERMMOD,      XK_C,           clipcopy,       {.i =  0} },
-	{ TERMMOD,      XK_V,           clippaste,      {.i =  0} },
-	{ TERMMOD,      XK_J,           selpaste,       {.i =  0} },
+	{ TERMMOD,      XK_l,           zoom,           {.f = +1} },
+	{ TERMMOD2,     XK_h,           zoom,           {.f = -1} },
+	{ TERMMOD,     XK_f,           zoomreset,      {.f =  0} },
+	{ CTRLSHIFT,    XK_C,           clipcopy,       {.i =  0} },
+	{ CTRLSHIFT,    XK_V,           clippaste,      {.i =  0} },
+	{ TERMMOD,      XK_p,           selpaste,       {.i =  0} },
 	{ ShiftMask,    XK_Insert,      selpaste,       {.i =  0} },
 	{ TERMMOD,      XK_Num_Lock,    numlock,        {.i =  0} },
-	{ TERMMOD,      XK_E,           kscrollup,      {.i =  1} },
-	{ TERMMOD,      XK_N,           kscrolldown,    {.i =  1} },
+	{ TERMMOD,      XK_k,           kscrollup,      {.i =  1} },
+	{ TERMMOD,      XK_j,           kscrolldown,    {.i =  1} },
 	{ ShiftMask,    XK_Page_Up,     kscrollup,      {.i = -1} },
 	{ ShiftMask,    XK_Page_Down,   kscrolldown,    {.i = -1} },
 };
