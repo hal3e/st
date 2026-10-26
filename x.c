@@ -1981,7 +1981,8 @@ kpress(XEvent *ev)
 {
 	XKeyEvent *e = &ev->xkey;
 	KeySym ksym = NoSymbol;
-	char buf[64], *customkey;
+	char stackbuf[64], *buf = stackbuf, *customkey;
+	int capacity = sizeof(stackbuf);
 	int len;
 	Rune c;
 	Status status;
@@ -1991,29 +1992,34 @@ kpress(XEvent *ev)
 		return;
 
 	if (xw.ime.xic) {
-		len = XmbLookupString(xw.ime.xic, e, buf, sizeof buf, &ksym, &status);
-		if (status == XBufferOverflow)
-			return;
+		len = XmbLookupString(xw.ime.xic, e, buf, capacity, &ksym, &status);
+		if (status == XBufferOverflow) {
+			capacity = len;
+			buf = xmalloc(capacity);
+			len = XmbLookupString(xw.ime.xic, e, buf, capacity, &ksym, &status);
+			if (status == XBufferOverflow)
+				goto cleanup;
+		}
 	} else {
-		len = XLookupString(e, buf, sizeof buf, &ksym, NULL);
+		len = XLookupString(e, buf, capacity, &ksym, NULL);
 	}
 	/* 1. shortcuts */
 	for (bp = shortcuts; bp < shortcuts + LEN(shortcuts); bp++) {
 		if (ksym == bp->keysym && match(bp->mod, e->state)) {
 			bp->func(&(bp->arg));
-			return;
+			goto cleanup;
 		}
 	}
 
 	/* 2. custom keys from config.h */
 	if ((customkey = kmap(ksym, e->state))) {
 		ttywrite(customkey, strlen(customkey), 1);
-		return;
+		goto cleanup;
 	}
 
 	/* 3. composed string from input method */
 	if (len == 0)
-		return;
+		goto cleanup;
 	if (len == 1 && e->state & Mod1Mask) {
 		if (IS_SET(MODE_8BIT)) {
 			if (*buf < 0177) {
@@ -2027,6 +2033,9 @@ kpress(XEvent *ev)
 		}
 	}
 	ttywrite(buf, len, 1);
+cleanup:
+	if (buf != stackbuf)
+		free(buf);
 }
 
 void
