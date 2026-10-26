@@ -2094,6 +2094,64 @@ strparse(void)
 }
 
 void
+externalpipe(const Arg *arg)
+{
+	int to[2], n, x, len, newline = 0;
+	char buf[UTF_SIZ];
+	Line line;
+	void (*oldsigpipe)(int);
+
+	if (pipe(to) == -1) {
+		perror("st: externalpipe pipe");
+		return;
+	}
+	switch (fork()) {
+	case -1:
+		perror("st: externalpipe fork");
+		close(to[0]);
+		close(to[1]);
+		return;
+	case 0:
+		if (dup2(to[0], STDIN_FILENO) == -1) {
+			perror("st: externalpipe dup2");
+			_exit(1);
+		}
+		close(to[0]);
+		close(to[1]);
+		execvp(((char **)arg->v)[0], (char **)arg->v);
+		perror("st: externalpipe execvp");
+		_exit(127);
+	}
+	close(to[0]);
+	oldsigpipe = signal(SIGPIPE, SIG_IGN);
+	/* Walk the history ring from oldest to newest, then the live screen. */
+	for (n = IS_SET(MODE_ALTSCREEN) ? term.histn : 0;
+	     n < term.histn + term.row; n++) {
+		line = n < term.histn
+		     ? term.hist[(term.histi - term.histn + n + HISTSIZE + 1) % HISTSIZE]
+		     : term.line[n - term.histn];
+		len = term.col;
+		newline = line[len - 1].mode & ATTR_WRAP;
+		if (!newline)
+			while (len > 0 && line[len - 1].u == ' ')
+				len--;
+		for (x = 0; x < len; x++) {
+			if (line[x].mode & ATTR_WDUMMY)
+				continue;
+			if (xwrite(to[1], buf, utf8encode(line[x].u, buf)) < 0)
+				goto done;
+		}
+		if (!newline && xwrite(to[1], "\n", 1) < 0)
+			goto done;
+	}
+	if (newline)
+		(void)xwrite(to[1], "\n", 1);
+done:
+	close(to[1]);
+	signal(SIGPIPE, oldsigpipe);
+}
+
+void
 strdump(void)
 {
 	size_t i;
