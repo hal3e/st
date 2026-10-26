@@ -185,11 +185,16 @@ static MouseShortcut mshortcuts[] = {
 	{ XK_ANY_MOD,           Button5, ttysend,        {.s = "\005"} },
 };
 
+static char *openurlcmd[] = {"st-urlhandler", "-o", NULL};
+static char *copyurlcmd[] = {"st-urlhandler", "-c", NULL};
+
 /* Internal keyboard shortcuts. */
 #define MODKEY Mod1Mask
 #define TERMMOD (ControlMask|ShiftMask)
 
 static Shortcut shortcuts[] = {
+	{ MODKEY, XK_l, externalpipe, {.v = openurlcmd} },
+	{ MODKEY, XK_y, externalpipe, {.v = copyurlcmd} },
 	{ ShiftMask, XK_Page_Up, kscrollup, {.i = -1} },
 	{ ShiftMask, XK_Page_Down, kscrolldown, {.i = -1} },
 	/* mask                 keysym          function        argument */
