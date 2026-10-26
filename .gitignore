@@ -1,0 +1,7 @@
+config.h
+*.o
+st
+st-*.tar.gz
+*.orig
+*.rej
+__pycache__/

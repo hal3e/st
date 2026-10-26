@@ -3,6 +3,11 @@ st - simple terminal
 st is a simple terminal emulator for X which sucks less.
 
 
+Fork configuration and patch inventory
+--------------------------------------
+See PATCHES.md for the patch stack, personal configuration, and runtime checks.
+
+
 Requirements
 ------------
 The build requires Xlib, Xft, Xrender, Fontconfig, FreeType, HarfBuzz,

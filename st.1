@@ -56,7 +56,7 @@ is a simple terminal emulator.
 disable alternate screens in terminal
 .TP
 .BI \-c " class"
-defines the window class (default $TERM).
+defines the window class (default St).
 .TP
 .BI \-f " font"
 defines the
@@ -73,7 +73,7 @@ for further details.
 will fixate the position given with the -g option.
 .TP
 .BI \-n " name"
-defines the window instance name (default $TERM).
+defines the window instance name (default st).
 .TP
 .BI \-o " iofile"
 writes all the I/O to
@@ -142,27 +142,41 @@ Print the full screen to the
 Print the selection to the
 .I iofile.
 .TP
-.B Ctrl-Shift-Page Up
+.B Ctrl-Alt-l
 Increase font size.
 .TP
-.B Ctrl-Shift-Page Down
-Decrease font size.
+.B Ctrl-Mod5-h
+Decrease font size using the configured Mod5 modifier.
 .TP
-.B Ctrl-Shift-Home
+.B Ctrl-Alt-f
 Reset to default font size.
 .TP
-.B Ctrl-Shift-y
-Paste from primary selection (middle mouse button).
+.B Ctrl-Alt-p, Shift-Insert, or right mouse button
+Paste from the primary selection.
 .TP
 .B Ctrl-Shift-c
 Copy the selected text to the clipboard selection.
 .TP
 .B Ctrl-Shift-v
 Paste from the clipboard selection.
+.TP
+.B Ctrl-Alt-k / Ctrl-Alt-j
+Scroll up / down ten lines.
+.TP
+.B Shift-Page Up / Shift-Page Down
+Scroll up / down one page.
+.TP
+.B Mouse wheel
+Scroll history when the application is not handling mouse events.
+.TP
+.B Ctrl-Alt-o
+Send terminal history and the screen to st-copyout, which opens Neovim.
 .SH CUSTOMIZATION
 .B st
 can be customized by creating a custom config.h and (re)compiling the source
 code. This keeps it fast, secure and simple.
+Background opacity is set by alpha in config.h, from 0 (transparent) to 1
+(opaque), and remains fixed for the window.
 .SH GRAPHICS
 This build supports a subset of the Kitty graphics protocol, including native
 images and Unicode placeholders. Use
