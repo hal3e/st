@@ -1,0 +1,8 @@
+#!/bin/sh
+
+tmpfile=$(mktemp /tmp/st-cmd-output.XXXXXX)
+trap 'rm "$tmpfile"' EXIT
+cat >"$tmpfile"
+sed -i 's/\x0//g' "$tmpfile"
+
+st -e nvim + "$tmpfile"

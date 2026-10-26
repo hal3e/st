@@ -188,11 +188,14 @@ static MouseShortcut mshortcuts[] = {
 static char *openurlcmd[] = {"st-urlhandler", "-o", NULL};
 static char *copyurlcmd[] = {"st-urlhandler", "-c", NULL};
 
+static char *copyoutput[] = {"st-copyout", NULL};
+
 /* Internal keyboard shortcuts. */
 #define MODKEY Mod1Mask
 #define TERMMOD (ControlMask|ShiftMask)
 
 static Shortcut shortcuts[] = {
+	{ MODKEY, XK_o, externalpipe, {.v = copyoutput} },
 	{ MODKEY, XK_l, externalpipe, {.v = openurlcmd} },
 	{ MODKEY, XK_y, externalpipe, {.v = copyurlcmd} },
 	{ ShiftMask, XK_Page_Up, kscrollup, {.i = -1} },
