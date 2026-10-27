@@ -1471,6 +1471,8 @@ tsetattr(const int *attr, int l)
 		case 9:
 			term.c.attr.mode |= ATTR_STRUCK;
 			break;
+		case 10: /* default font; no alternate-font state */
+			break;
 		case 22:
 			term.c.attr.mode &= ~(ATTR_BOLD | ATTR_FAINT);
 			break;
@@ -1511,6 +1513,8 @@ tsetattr(const int *attr, int l)
 			 * "underline" pixels. We don't support that and
 			 * instead eat up a following "5;n" or "2;r;g;b". */
 			tdefcolor(attr, &i, l);
+			break;
+		case 59: /* reset underline color; no separate color state */
 			break;
 		default:
 			if (BETWEEN(attr[i], 30, 37)) {
