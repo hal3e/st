@@ -4,7 +4,8 @@
 
 include config.mk
 
-SRC = st.c x.c boxdraw.c hb.c
+SRC = st.c x.c boxdraw.c hb.c rowcolumn_diacritics_helpers.c graphics.c
+HDR = arg.h st.h win.h hb.h graphics.h khash.h kvec.h boxdraw_data.h
 OBJ = $(SRC:.c=.o)
 
 all: st
@@ -15,23 +16,29 @@ config.h:
 .c.o:
 	$(CC) $(STCFLAGS) -c $<
 
-st.o: config.h st.h win.h
-x.o: arg.h config.h st.h win.h hb.h
+st.o: config.h st.h win.h graphics.h
+x.o: arg.h config.h st.h win.h hb.h graphics.h
 hb.o: st.h hb.h
 boxdraw.o: st.h boxdraw_data.h
+graphics.o: graphics.h khash.h kvec.h st.h
+rowcolumn_diacritics_helpers.o: st.h
 
 $(OBJ): config.h config.mk
 
 st: $(OBJ)
 	$(CC) -o $@ $(OBJ) $(STLDFLAGS)
 
+check: st
+	python3 tests/test_graphics.py --st ./st
+
 clean:
 	rm -f st $(OBJ) st-$(VERSION).tar.gz
 
 dist: clean
 	mkdir -p st-$(VERSION)
-	cp -R FAQ LEGACY TODO LICENSE Makefile README config.mk\
-		config.def.h st.info st.1 arg.h st.h win.h $(SRC)\
+	cp -R FAQ LEGACY LICENSE Makefile README GRAPHICS config.mk\
+		config.def.h st.info st.1 $(HDR) $(SRC) tests\
+		st-copyout st-urlhandler icat-mini.sh\
 		st-$(VERSION)
 	tar -cf - st-$(VERSION) | gzip > st-$(VERSION).tar.gz
 	rm -rf st-$(VERSION)
@@ -39,6 +46,8 @@ dist: clean
 install: st
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
 	cp -f st $(DESTDIR)$(PREFIX)/bin
+	cp -f icat-mini.sh $(DESTDIR)$(PREFIX)/bin/st-icat
+	chmod 755 $(DESTDIR)$(PREFIX)/bin/st-icat
 	cp -f st-copyout $(DESTDIR)$(PREFIX)/bin
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/st-copyout
 	cp -f st-urlhandler $(DESTDIR)$(PREFIX)/bin
@@ -52,8 +61,9 @@ install: st
 
 uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/bin/st
+	rm -f $(DESTDIR)$(PREFIX)/bin/st-icat
 	rm -f $(DESTDIR)$(PREFIX)/bin/st-copyout
 	rm -f $(DESTDIR)$(PREFIX)/bin/st-urlhandler
 	rm -f $(DESTDIR)$(MANPREFIX)/man1/st.1
 
-.PHONY: all clean dist install uninstall
+.PHONY: all check clean dist install uninstall

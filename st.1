@@ -163,6 +163,15 @@ Paste from the clipboard selection.
 .B st
 can be customized by creating a custom config.h and (re)compiling the source
 code. This keeps it fast, secure and simple.
+.SH GRAPHICS
+This build supports a subset of the Kitty graphics protocol, including native
+images and Unicode placeholders. Use
+.B st-icat image.png
+or a compatible graphics client to display an image.
+The st-icat helper requires ImageMagick.
+Image upload, memory, and cache limits are configured in config.h.
+See the GRAPHICS file in the source distribution for protocol limits and
+tmux setup.
 .SH AUTHORS
 See the LICENSE file for the authors.
 .SH LICENSE

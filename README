@@ -5,7 +5,8 @@ st is a simple terminal emulator for X which sucks less.
 
 Requirements
 ------------
-In order to build st you need the Xlib header files.
+The build requires Xlib, Xft, Xrender, Fontconfig, FreeType, HarfBuzz,
+Imlib2, and zlib development files, a C compiler, make, and pkg-config.
 
 
 Installation
@@ -27,6 +28,15 @@ the st terminfo entry with the following command:
     tic -sx st.info
 
 See the man page for additional details.
+
+Graphics
+--------
+This fork supports a subset of the Kitty graphics protocol, including native
+PNG/RGB/RGBA images, direct and shared-memory uploads, and Unicode placeholders.
+See GRAPHICS for usage, configuration, limitations, and the upstream source.
+
+Run make check to exercise protocol replies and rendered pixels in Xvfb.
+The checks require Python 3, Xvfb, and libX11.
 
 Credits
 -------

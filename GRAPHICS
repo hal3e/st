@@ -1,0 +1,111 @@
+Kitty graphics
+==============
+
+This implementation is adapted from Sergei Grechanik's st-graphics patch:
+https://st.suckless.org/patches/kitty-graphics-protocol/
+st-kitty-graphics-20251230-0.9.3.diff, based on graphics commit eb8d6cb.
+The original MIT notices are preserved in the imported source files.
+
+Protocol specification:
+https://sw.kovidgoyal.net/kitty/graphics-protocol/
+
+Build
+-----
+Install the development packages for Imlib2 and zlib in addition to the
+existing X11, Xft, Xrender, Fontconfig, FreeType, and HarfBuzz dependencies.
+On Debian, the additional package names are libimlib2-dev and zlib1g-dev.
+
+If you maintain config.h, merge the graphics configuration and anysize
+alignment settings from config.def.h before rebuilding. A pre-existing
+config.h is never replaced by make. Keep your fonts, colors, and shortcuts.
+
+Build with make, and install the updated terminfo with tic -sx st.info.
+
+Display images
+--------------
+With Kitty's standalone kitten executable installed:
+
+    kitten icat image.png
+
+For an SSH session, force transfer through the terminal stream:
+
+    kitten icat --transfer-mode=stream image.png
+
+The included helper is installed as st-icat by make install:
+
+    st-icat image.png
+    st-icat -m direct image.png
+
+Before installing, it can be run as ./icat-mini.sh. The helper requires
+ImageMagick. The terminal itself does not require ImageMagick or kitty.
+
+Keep TERM=st-256color. Clients can probe the graphics protocol; clients which
+only recognize terminal brands may need their graphics backend selected
+explicitly. Avoid changing TERM globally to impersonate another terminal.
+
+In tmux, enable passthrough:
+
+    set -g allow-passthrough on
+
+The application must send graphics commands through tmux and use Unicode
+placeholders to make image cells follow its layout. The tmux terminal entry
+must advertise RGB colors. SSH and tmux application combinations are not
+covered by the local Xvfb checks.
+
+Supported behavior
+------------------
+* PNG and raw RGB/RGBA uploads, including zlib-compressed raw data.
+* Chunked direct transfers, regular files, temporary files, and POSIX shared
+  memory. Local file/shared-memory transfers require a shared filesystem.
+* Capability queries, acknowledgements, and error responses.
+* Image IDs, placement IDs, cropping, and placement dimensions.
+* Classic placements and Unicode placeholders; images follow terminal cells
+  through scrollback and screen changes.
+* Deleting classic placements restores their saved text where available.
+* SGR underline colors/styles, used by Unicode placeholders for placement IDs.
+* Pixel-size queries used by image clients.
+
+The integration preserves box drawing, HarfBuzz shaping, transparent
+backgrounds, input-method handling, and the existing scrollback behavior.
+Image placeholder metadata is excluded from HarfBuzz shaping.
+
+Configuration and shortcuts
+---------------------------
+config.def.h contains image file/RAM/cache limits and the cache-directory
+template. Defaults allow a 20 MiB upload, a 100 MiB decoded image, a 300 MiB
+disk cache, and 300 MiB of image RAM. Cache limits use the upstream eviction
+policy; they are not strict process-wide memory limits.
+
+Graphics shortcuts use GRAPHICSMOD (Ctrl+Shift), independently of TERMMOD:
+
+    Ctrl+Shift+right click   Open the image in feh, if installed.
+    Ctrl+Shift+middle click  Inspect image metadata.
+    Ctrl+Shift+F1            Cycle graphics diagnostics.
+    Ctrl+Shift+F6            Dump image/cache state to stderr.
+    Ctrl+Shift+F7            Unload image data from RAM.
+    Ctrl+Shift+F8            Toggle image rendering.
+
+The imported anysize support centers the terminal grid inside the window by
+default. Adjust anysize_halign and anysize_valign in config.h if desired.
+
+Limits
+------
+This is a subset of the Kitty graphics protocol, not a complete equivalent
+of the kitty terminal:
+
+* Placements support up to 511 rows/columns and 24-bit placement IDs.
+* Z-index, overlapping layers, relative placements, and deletion by pixel or
+  cursor position are not supported. Classic placements occupy terminal cells.
+* Animation support is inherited and experimental; frame composition/deletion
+  and explicit loop counts are not fully implemented.
+* Partial-file offsets are not implemented. Shared-memory offsets are supported.
+* Inline image decoding depends on the Imlib2 loaders installed on the system.
+
+Validation
+----------
+    make check
+
+The Python standard-library tests launch st in Xvfb, drive a real child PTY,
+and read X11 pixels. They cover raw/PNG/RGBA/compressed uploads, chunking,
+local files and shared memory, Unicode placeholders, cursor policy, deletion,
+scrollback, alternate screens, SGR subparameters, and invalid transfers.
